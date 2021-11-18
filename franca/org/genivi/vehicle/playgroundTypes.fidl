@@ -41,7 +41,7 @@ package org.genivi.vehicle.playgroundtypes
     <**
       @description : Fourth gear is selected.
     **>
-    ROURTH_GEAR = 5
+    FOURTH_GEAR = 5
     <**
       @description : Fifth gear is selected.
     **>
