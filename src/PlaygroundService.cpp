@@ -27,6 +27,7 @@ int main() {
     std::cout << "Successfully Registered Service!" << std::endl;
 
     while (true) {
+        playgroundService->updateTankVolume();
         playgroundService->monitorTankLevel();
         std::cout << "Waiting for calls... (Abort with CTRL+C)" << std::endl;
         std::this_thread::sleep_for(std::chrono::milliseconds(500));

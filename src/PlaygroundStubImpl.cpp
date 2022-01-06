@@ -57,6 +57,17 @@ void PlaygroundStubImpl::initializeAttributes() {
       MockedValues::SEAT_HEATING_LEVEL);
 }
 
+void PlaygroundStubImpl::updateTankVolume() {
+  const float currentVolume = PlaygroundStubDefault::getVolumeAttribute();
+  float updatedVolume;
+  if (currentVolume > 0.0) {
+      updatedVolume = currentVolume - 0.1;
+  } else {
+      updatedVolume = CAPACITY_MAX_VALUE_IN_LITERS;
+  }
+  PlaygroundStubDefault::setVolumeAttribute(updatedVolume);
+}
+
 void PlaygroundStubImpl::monitorTankLevel() {
   const int capacityAttribute =
       PlaygroundStubDefault::getCapacityAttribute();

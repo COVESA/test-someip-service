@@ -37,6 +37,8 @@ public:
 
   void initializeAttributes();
 
+  void updateTankVolume();
+
   void monitorTankLevel();
 
   virtual void

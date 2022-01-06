@@ -23,7 +23,7 @@ namespace MockedValues {
 
 float CONSUMPTION = 4.5;
 uint8_t CAPACITY = 200;
-float VOLUME = 60.8;
+float VOLUME = 60.0;
 uint16_t ENGINE_SPEED = 2000;
 Gear CURRENT_GEAR = Gear(Gear::Literal::FOURTH_GEAR);
 bool IS_REVERSE_GEAR_ON = false;
