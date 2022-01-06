@@ -13,7 +13,7 @@
  */
 
 #include "PlaygroundStubImpl.hpp"
-#include "MockedValues.hpp"
+#include "mock/MockedAttributes.hpp"
 #include <bits/stdint-uintn.h>
 #include <csignal>
 #include <iostream>
@@ -24,37 +24,30 @@
 typedef v1_0::org::genivi::vehicle::playground::PlaygroundStubDefault
     PlaygroundStubDefault;
 
-const double CAPACITY_MIN_VALUE = 0.0;
-const double CAPACITY_MAX_VALUE = 255.0;
-const double CAPACITY_MAX_VALUE_IN_LITERS = 80.0;
-
-bool getNextStateFromCommand(const bool &currentState,
-                             const DoorCommand &command) {
-  if (command == DoorCommand::Literal::NOTHING) {
-    return currentState;
-  }
-  return (command == DoorCommand::Literal::OPEN_DOOR);
+PlaygroundStubImpl::PlaygroundStubImpl()
+    : consumption{}, capacity{}, volume{}, engineSpeed{}, currentGear{},
+      isReverseGearOn{}, drivePowerTransmission{}, doorsOpeningStatus{},
+      seatHeatingStatus{}, seatHeatingLevel{} {
+  initializeAttributes();
 }
-
-PlaygroundStubImpl::PlaygroundStubImpl() { initializeAttributes(); }
 PlaygroundStubImpl::~PlaygroundStubImpl() {}
 
 void PlaygroundStubImpl::initializeAttributes() {
-  PlaygroundStubDefault::setConsumptionAttribute(MockedValues::CONSUMPTION);
-  PlaygroundStubDefault::setCapacityAttribute(MockedValues::CAPACITY);
-  PlaygroundStubDefault::setVolumeAttribute(MockedValues::VOLUME);
-  PlaygroundStubDefault::setEngineSpeedAttribute(MockedValues::ENGINE_SPEED);
-  PlaygroundStubDefault::setCurrentGearAttribute(MockedValues::CURRENT_GEAR);
+  PlaygroundStubDefault::setConsumptionAttribute(consumption.getValue());
+  PlaygroundStubDefault::setCapacityAttribute(capacity.getValue());
+  PlaygroundStubDefault::setVolumeAttribute(volume.getValue());
+  PlaygroundStubDefault::setEngineSpeedAttribute(engineSpeed.getValue());
+  PlaygroundStubDefault::setCurrentGearAttribute(currentGear.getValue());
   PlaygroundStubDefault::setIsReverseGearOnAttribute(
-      MockedValues::IS_REVERSE_GEAR_ON);
+      isReverseGearOn.getValue());
   PlaygroundStubDefault::setDrivePowerTransmissionAttribute(
-      MockedValues::DRIVE_POWER_TRANSMISSION);
+      drivePowerTransmission.getValue());
   PlaygroundStubDefault::setDoorsOpeningStatusAttribute(
-      MockedValues::DOORS_OPENING_STATUS);
+      doorsOpeningStatus.getValue());
   PlaygroundStubDefault::setSeatHeatingStatusAttribute(
-      MockedValues::SEAT_HEATING_STATUS);
+      seatHeatingStatus.getValue());
   PlaygroundStubDefault::setSeatHeatingLevelAttribute(
-      MockedValues::SEAT_HEATING_LEVEL);
+      seatHeatingLevel.getValue());
 }
 
 void PlaygroundStubImpl::updateTankVolume() {
@@ -63,19 +56,16 @@ void PlaygroundStubImpl::updateTankVolume() {
   if (currentVolume > 0.0) {
       updatedVolume = currentVolume - 0.1;
   } else {
-      updatedVolume = CAPACITY_MAX_VALUE_IN_LITERS;
+      updatedVolume = capacity.getCapacityInLiters();
   }
   PlaygroundStubDefault::setVolumeAttribute(updatedVolume);
 }
 
 void PlaygroundStubImpl::monitorTankLevel() {
-  const int capacityAttribute =
-      PlaygroundStubDefault::getCapacityAttribute();
-  const double capacity =
-      CAPACITY_MAX_VALUE_IN_LITERS *
-      (capacityAttribute / (CAPACITY_MAX_VALUE - CAPACITY_MIN_VALUE));
-  const float currentVolume = PlaygroundStubDefault::getVolumeAttribute();
-  const uint8_t &level = (uint8_t)(100 * currentVolume / capacity);
+  const double capacityInLiters = capacity.getCapacityInLiters();
+  const int currentVolume = PlaygroundStubDefault::getVolumeAttribute();
+
+  const uint8_t &level = (uint8_t)(100 * currentVolume / capacityInLiters);
   fireCurrentTankVolumeEvent(level);
 }
 
@@ -96,14 +86,14 @@ void PlaygroundStubImpl::changeDoorsState(
   const DoorCommand &rearLeftCommand = _commands.getRearLeftDoor();
   const DoorCommand &rearRightCommand = _commands.getRearRightDoor();
 
-  const bool &nextFrontLeftState =
-      getNextStateFromCommand(currentFrontLeftState, frontLeftCommand);
-  const bool &nextFrontRightState =
-      getNextStateFromCommand(currentFrontRightState, frontRightCommand);
-  const bool &nextRearLeftState =
-      getNextStateFromCommand(currentRearLeftState, rearLeftCommand);
-  const bool &nextRearRightState =
-      getNextStateFromCommand(currentRearRightState, rearRightCommand);
+  const bool &nextFrontLeftState = doorsOpeningStatus.getNextStateFromCommand(
+      currentFrontLeftState, frontLeftCommand);
+  const bool &nextFrontRightState = doorsOpeningStatus.getNextStateFromCommand(
+      currentFrontRightState, frontRightCommand);
+  const bool &nextRearLeftState = doorsOpeningStatus.getNextStateFromCommand(
+      currentRearLeftState, rearLeftCommand);
+  const bool &nextRearRightState = doorsOpeningStatus.getNextStateFromCommand(
+      currentRearRightState, rearRightCommand);
 
   const DoorsStatus &doorsStatus =
       DoorsStatus(nextFrontLeftState, nextFrontRightState, nextRearLeftState,

@@ -44,6 +44,7 @@ target_link_libraries(
 add_executable(PlaygroundService
     src/PlaygroundService.cpp
     src/PlaygroundStubImpl.cpp
+    src/mock/MockedAttributes.cpp
 )
 target_link_libraries(
     PlaygroundService

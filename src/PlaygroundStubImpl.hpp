@@ -18,6 +18,8 @@
 #include <bits/stdint-uintn.h>
 #include <v1/org/genivi/vehicle/playground/PlaygroundStubDefault.hpp>
 
+#include "mock/MockedAttributes.hpp"
+
 typedef ::org::genivi::vehicle::playgroundtypes::PlaygroundTypes::Gear Gear;
 typedef ::org::genivi::vehicle::playgroundtypes::PlaygroundTypes::DoorsStatus
     DoorsStatus;
@@ -31,6 +33,18 @@ typedef CommonAPI::Event<uint8_t> CurrentTankVolumeEvent;
 
 class PlaygroundStubImpl
     : public v1_0::org::genivi::vehicle::playground::PlaygroundStubDefault {
+private:
+  Mock::Consumption consumption;
+  Mock::Capacity capacity;
+  Mock::Volume volume;
+  Mock::EngineSpeed engineSpeed;
+  Mock::CurrentGear currentGear;
+  Mock::IsReverseGearOn isReverseGearOn;
+  Mock::DrivePowerTransmission drivePowerTransmission;
+  Mock::DoorsOpeningStatus doorsOpeningStatus;
+  Mock::SeatHeatingStatus seatHeatingStatus;
+  Mock::SeatHeatingLevel seatHeatingLevel;
+
 public:
   PlaygroundStubImpl();
   virtual ~PlaygroundStubImpl();
