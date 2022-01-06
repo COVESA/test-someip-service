@@ -74,7 +74,7 @@ void PlaygroundStubImpl::monitorTankLevel() {
   const double capacity =
       CAPACITY_MAX_VALUE_IN_LITERS *
       (capacityAttribute / (CAPACITY_MAX_VALUE - CAPACITY_MIN_VALUE));
-  const int currentVolume = PlaygroundStubDefault::getVolumeAttribute();
+  const float currentVolume = PlaygroundStubDefault::getVolumeAttribute();
   const uint8_t &level = (uint8_t)(100 * currentVolume / capacity);
   fireCurrentTankVolumeEvent(level);
 }
